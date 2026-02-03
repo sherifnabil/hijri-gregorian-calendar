@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { DualDatePicker } from '@dual-datepicker/vue3';
-import '@dual-datepicker/vue3/styles';
-import type { CalendarDate } from '@dual-datepicker/core';
+import { HijriGregorianCalendar } from '@sherifnabil/hijri-gregorian-calendar-vue3';
+import '@sherifnabil/hijri-gregorian-calendar-vue3/styles';
+import type { CalendarDate } from '@sherifnabil/hijri-gregorian-calendar-core';
 
 const gregorianDate = ref<CalendarDate | null>(null);
 const hijriDate = ref<CalendarDate | null>(null);
@@ -11,34 +11,26 @@ const hijriDate = ref<CalendarDate | null>(null);
 <template>
   <div class="container">
     <header>
-      <h1>🗓️ Dual Calendar DatePicker</h1>
+      <h1>🗓️ Hijri/Gregorian Calendar DatePicker</h1>
       <p>Vue 3 Example - Hijri & Gregorian Calendars</p>
     </header>
 
     <main>
       <section class="demo-section">
         <h2>Gregorian Calendar (English)</h2>
-        <DualDatePicker
-          v-model="gregorianDate"
-          calendar="gregorian"
-          locale="en"
-          placeholder="Select Gregorian date"
-        />
+        <HijriGregorianCalendar v-model="gregorianDate" calendar="gregorian" locale="en" placeholder="Select Gregorian date" />
         <div v-if="gregorianDate" class="selected-date">
-          Selected: {{ gregorianDate.year }}-{{ String(gregorianDate.month).padStart(2, '0') }}-{{ String(gregorianDate.day).padStart(2, '0') }}
+          Selected: {{ gregorianDate.year }}-{{ String(gregorianDate.month).padStart(2, '0') }}-{{
+            String(gregorianDate.day).padStart(2, '0') }}
         </div>
       </section>
 
       <section class="demo-section">
         <h2>Hijri Calendar (Arabic)</h2>
-        <DualDatePicker
-          v-model="hijriDate"
-          calendar="hijri"
-          locale="ar"
-          placeholder="اختر التاريخ الهجري"
-        />
+        <HijriGregorianCalendar v-model="hijriDate" calendar="hijri" locale="ar" placeholder="اختر التاريخ الهجري" />
         <div v-if="hijriDate" class="selected-date">
-          Selected: {{ hijriDate.year }}/{{ String(hijriDate.month).padStart(2, '0') }}/{{ String(hijriDate.day).padStart(2, '0') }}
+          Selected: {{ hijriDate.year }}/{{ String(hijriDate.month).padStart(2, '0') }}/{{
+            String(hijriDate.day).padStart(2, '0') }}
         </div>
       </section>
     </main>

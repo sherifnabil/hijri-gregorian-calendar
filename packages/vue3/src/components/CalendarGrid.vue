@@ -52,8 +52,8 @@
 </template>
 
 <script setup lang="ts">
-import { formatNumber } from '@dual-datepicker/core';
-import type { CalendarMonth, CalendarDay, CalendarAdapter, LocaleConfig } from '@dual-datepicker/core';
+import { formatNumber } from '@sherifnabil/hijri-gregorian-calendar-core';
+import type { CalendarMonth, CalendarDay, CalendarAdapter, LocaleConfig } from '@sherifnabil/hijri-gregorian-calendar-core';
 
 interface DateRange {
   start: { year: number; month: number; day: number } | null;

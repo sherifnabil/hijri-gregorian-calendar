@@ -8,8 +8,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@dual-datepicker/core": "file:../../packages/core",
-    "@dual-datepicker/vue3": "file:../../packages/vue3",
+    "@sherifnabil/hijri-gregorian-calendar-core": "file:../../packages/core",
+    "@sherifnabil/hijri-gregorian-calendar-vue3": "file:../../packages/vue3",
     "vue": "^3.4.15"
   },
   "devDependencies": {

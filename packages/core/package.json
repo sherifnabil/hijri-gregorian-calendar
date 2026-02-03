@@ -1,5 +1,5 @@
 {
-  "name": "@dual-datepicker/core",
+  "name": "@sherifnabil/hijri-gregorian-calendar-core",
   "version": "1.0.0",
   "type": "module",
   "description": "Framework-agnostic dual calendar (Hijri/Gregorian) logic",
@@ -17,6 +17,21 @@
     "dist"
   ],
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sherifnabil/hijri-gregorian-calendar.git",
+    "directory": "packages/core"
+  },
+  "keywords": [
+    "datepicker",
+    "calendar",
+    "hijri",
+    "gregorian",
+    "islamic-calendar",
+    "date-picker"
+  ],
+  "author": "Sherif Nabil <sherifnabil441@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly --declaration --declarationMap --outDir dist",
     "typecheck": "tsc --noEmit"

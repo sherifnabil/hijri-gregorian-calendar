@@ -1,8 +1,8 @@
 {
-  "name": "@dual-datepicker/vue3",
+  "name": "@sherifnabil/hijri-gregorian-calendar-vue3",
   "version": "1.0.0",
   "type": "module",
-  "description": "Vue 3 wrapper for dual calendar datepicker",
+  "description": "Vue 3 wrapper for hijri/gregorian calendar datepicker",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -25,7 +25,12 @@
     "vue": "^3.3.0"
   },
   "dependencies": {
-    "@dual-datepicker/core": "file:../core"
+    "@sherifnabil/hijri-gregorian-calendar-core": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sherifnabil/hijri-gregorian-calendar.git",
+    "directory": "packages/vue3"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",

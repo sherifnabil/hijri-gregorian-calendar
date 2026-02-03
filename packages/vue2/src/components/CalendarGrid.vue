@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { formatNumber } from '@dual-datepicker/core';
+import { formatNumber } from '@sherifnabil/hijri-gregorian-calendar-core';
 
 export default {
   name: 'CalendarGrid',

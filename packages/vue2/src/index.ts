@@ -1,8 +1,7 @@
-import DualDatePicker from './components/DualDatePicker.vue';
-import './styles/datepicker.css';
+import HijriGregorianCalendar from './components/HijriGregorianCalendar.vue';
+export { default as HijriGregorianCalendar } from './components/HijriGregorianCalendar.vue';
 
-// Export component
-export { DualDatePicker };
+import './styles/datepicker.css';
 
 // Export types from core
 export type {
@@ -11,11 +10,11 @@ export type {
     LocaleConfig,
     CalendarMonth,
     CalendarDay
-} from '@dual-datepicker/core';
+} from '@sherifnabil/hijri-gregorian-calendar-core';
 
 // Vue plugin
 export default {
     install(Vue) {
-        Vue.component('DualDatePicker', DualDatePicker);
+        Vue.component('HijriGregorianCalendar', HijriGregorianCalendar);
     }
 };

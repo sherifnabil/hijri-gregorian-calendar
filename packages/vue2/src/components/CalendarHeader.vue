@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { formatNumber, getLocale, GregorianAdapter, HijriAdapter } from '@dual-datepicker/core';
+import { formatNumber, getLocale, GregorianAdapter, HijriAdapter } from '@sherifnabil/hijri-gregorian-calendar-core';
 
 export default {
   name: 'CalendarHeader',

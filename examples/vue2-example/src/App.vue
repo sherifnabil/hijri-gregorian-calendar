@@ -1,14 +1,15 @@
 <template>
   <div class="container">
     <header>
-      <h1>🗓️ Dual Calendar DatePicker</h1>
+      <h1>🗓️ Hijri/Gregorian Calendar DatePicker</h1>
       <p>Vue 2 Example - Hijri & Gregorian Calendars</p>
     </header>
 
     <main>
       <section class="demo-section">
         <h2>Gregorian Calendar (English)</h2>
-        <DualDatePicker v-model="gregorianDate" calendar="gregorian" locale="en" placeholder="Select Gregorian date" />
+        <HijriGregorianCalendar v-model="gregorianDate" calendar="gregorian" locale="en"
+          placeholder="Select Gregorian date" />
         <div v-if="gregorianDate" class="selected-date">
           Selected: {{ gregorianDate.year }}-{{ String(gregorianDate.month).padStart(2, '0') }}-{{
             String(gregorianDate.day).padStart(2, '0') }}
@@ -17,7 +18,7 @@
 
       <section class="demo-section">
         <h2>Hijri Calendar (Arabic)</h2>
-        <DualDatePicker v-model="hijriDate" calendar="hijri" locale="en" placeholder="اختر التاريخ الهجري" />
+        <HijriGregorianCalendar v-model="hijriDate" calendar="hijri" locale="ar" placeholder="اختر التاريخ الهجري" />
         <div v-if="hijriDate" class="selected-date">
           Selected: {{ hijriDate.year }}/{{ String(hijriDate.month).padStart(2, '0') }}/{{
             String(hijriDate.day).padStart(2, '0') }}
@@ -28,13 +29,13 @@
 </template>
 
 <script>
-import { DualDatePicker } from '@dual-datepicker/vue2';
-import '@dual-datepicker/vue2/styles';
+import { HijriGregorianCalendar } from '@sherifnabil/hijri-gregorian-calendar-vue2';
+import '@sherifnabil/hijri-gregorian-calendar-vue2/styles';
 
 export default {
   name: 'App',
   components: {
-    DualDatePicker
+    HijriGregorianCalendar
   },
   data() {
     return {

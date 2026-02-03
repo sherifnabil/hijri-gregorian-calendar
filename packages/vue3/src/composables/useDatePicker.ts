@@ -4,7 +4,7 @@ import type {
     CalendarDate,
     CalendarMonth,
     LocaleConfig
-} from '@dual-datepicker/core';
+} from '@sherifnabil/hijri-gregorian-calendar-core';
 import {
     GregorianAdapter,
     HijriAdapter,
@@ -15,7 +15,7 @@ import {
     previousYear,
     goToToday,
     getLocale
-} from '@dual-datepicker/core';
+} from '@sherifnabil/hijri-gregorian-calendar-core';
 
 export interface DateRange {
     start: CalendarDate | null;

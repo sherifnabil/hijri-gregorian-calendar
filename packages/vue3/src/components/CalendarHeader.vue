@@ -111,8 +111,8 @@
 
 <script setup lang="ts">
 import { ref, watch, computed, onMounted, onBeforeUnmount } from 'vue';
-import { formatNumber, getLocale, GregorianAdapter, HijriAdapter } from '@dual-datepicker/core';
-import type { CalendarAdapter, LocaleConfig } from '@dual-datepicker/core';
+import { formatNumber, getLocale, GregorianAdapter, HijriAdapter } from '@sherifnabil/hijri-gregorian-calendar-core';
+import type { CalendarAdapter, LocaleConfig } from '@sherifnabil/hijri-gregorian-calendar-core';
 
 const props = defineProps<{
   monthName: string;
