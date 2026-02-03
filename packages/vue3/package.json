@@ -1,6 +1,6 @@
 {
   "name": "@sherifnabil/hijri-gregorian-calendar-vue3",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Vue 3 wrapper for hijri/gregorian calendar datepicker",
   "main": "./dist/index.cjs",
