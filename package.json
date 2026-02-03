@@ -1,20 +1,44 @@
 {
-  "name": "dual-datepicker-monorepo",
+  "name": "hijri-gregorian-calendar",
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "description": "Hijri/Gregorian calendar datepicker for Vue 2 and Vue 3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sherifnabil/hijri-gregorian-calendar.git"
+  },
+  "keywords": [
+    "datepicker",
+    "calendar",
+    "hijri",
+    "gregorian",
+    "islamic-calendar",
+    "vue",
+    "vue2",
+    "vue3",
+    "date-picker",
+    "hijri-calendar",
+    "gregorian-calendar"
+  ],
+  "author": "Sherif Nabil <sherifnabil441@gmail.com>",
+  "license": "MIT",
   "workspaces": [
     "packages/*",
     "examples/*"
   ],
   "scripts": {
     "build": "npm run build:core && npm run build:vue3 && npm run build:vue2",
-    "build:core": "npm run build --workspace=@dual-datepicker/core",
-    "build:vue3": "npm run build --workspace=@dual-datepicker/vue3",
-    "build:vue2": "npm run build --workspace=@dual-datepicker/vue2",
+    "build:core": "npm run build --workspace=@sherifnabil/hijri-gregorian-calendar-core",
+    "build:vue3": "npm run build --workspace=@sherifnabil/hijri-gregorian-calendar-vue3",
+    "build:vue2": "npm run build --workspace=@sherifnabil/hijri-gregorian-calendar-vue2",
     "dev:vue3": "npm run dev --workspace=vue3-example",
     "dev:vue2": "npm run dev --workspace=vue2-example",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "publish:core": "cd packages/core && npm publish --access public",
+    "publish:vue2": "cd packages/vue2 && npm publish --access public",
+    "publish:vue3": "cd packages/vue3 && npm publish --access public",
+    "publish:all": "npm run build && npm run publish:core && npm run publish:vue2 && npm run publish:vue3"
   },
   "devDependencies": {
     "@types/node": "^20.11.5",
