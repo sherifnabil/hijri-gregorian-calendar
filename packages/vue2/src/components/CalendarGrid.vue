@@ -1,31 +1,31 @@
 <template>
-  <div class="calendar-grid" role="grid">
-    <div class="calendar-grid__weekdays" role="row">
-      <div v-for="(day, index) in calendarMonth.weekdayLabels" :key="index" class="calendar-grid__weekday"
+  <div class="hgc-calendar-grid" role="grid">
+    <div class="hgc-calendar-grid__weekdays" role="row">
+      <div v-for="(day, index) in calendarMonth.weekdayLabels" :key="index" class="hgc-calendar-grid__weekday"
         role="columnheader">
         {{ day }}
       </div>
     </div>
 
-    <div class="calendar-grid__weeks">
-      <div v-for="(week, weekIndex) in calendarMonth.weeks" :key="weekIndex" class="calendar-grid__week" role="row">
-        <button v-for="(day, dayIndex) in week" :key="dayIndex" type="button" class="calendar-grid__day" :class="{
-          'calendar-grid__day--current-month': day.isCurrentMonth,
-          'calendar-grid__day--other-month': !day.isCurrentMonth,
-          'calendar-grid__day--today': day.isToday,
-          'calendar-grid__day--selected': day.isSelected,
-          'calendar-grid__day--in-range': isInRange(day),
-          'calendar-grid__day--range-start': isRangeStart(day),
-          'calendar-grid__day--range-end': isRangeEnd(day),
-          'calendar-grid__day--disabled': day.isDisabled
+    <div class="hgc-calendar-grid__weeks">
+      <div v-for="(week, weekIndex) in calendarMonth.weeks" :key="weekIndex" class="hgc-calendar-grid__week" role="row">
+        <button v-for="(day, dayIndex) in week" :key="dayIndex" type="button" class="hgc-calendar-grid__day" :class="{
+          'hgc-calendar-grid__day--current-month': day.isCurrentMonth,
+          'hgc-calendar-grid__day--other-month': !day.isCurrentMonth,
+          'hgc-calendar-grid__day--today': day.isToday,
+          'hgc-calendar-grid__day--selected': day.isSelected,
+          'hgc-calendar-grid__day--in-range': isInRange(day),
+          'hgc-calendar-grid__day--range-start': isRangeStart(day),
+          'hgc-calendar-grid__day--range-end': isRangeEnd(day),
+          'hgc-calendar-grid__day--disabled': day.isDisabled
         }" :aria-label="formatDayLabel(day)" :aria-selected="day.isSelected" :disabled="day.isDisabled" role="gridcell"
           @click="onDayClick(day)">
           {{ formatDayNumber(day.date.day) }}
         </button>
       </div>
     </div>
-    <div class="calendar-header__actions">
-      <button type="button" class="calendar-header__btn calendar-header__btn--today" @click="$emit('today')">
+    <div class="hgc-calendar-header__actions">
+      <button type="button" class="hgc-calendar-header__btn hgc-calendar-header__btn--today" @click="$emit('today')">
         {{ locale.code == 'ar' ? 'اليوم' : 'Today' }}
       </button>
     </div>

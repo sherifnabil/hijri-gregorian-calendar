@@ -1,9 +1,9 @@
 <template>
-  <div class="dual-datepicker" ref="datepicker">
-    <div class="dual-datepicker__input-wrapper">
-      <div class="dual-datepicker__input-container" :style="{ direction: localeConfig.direction }">
-        <button type="button" class="dual-datepicker__toggle"
-          :class="{ 'dual-datepicker__toggle--rtl': localeConfig.direction === 'rtl' }"
+  <div class="hgc-datepicker" ref="datepicker">
+    <div class="hgc-datepicker__input-wrapper">
+      <div class="hgc-datepicker__input-container" :style="{ direction: localeConfig.direction }">
+        <button type="button" class="hgc-datepicker__toggle"
+          :class="{ 'hgc-datepicker__toggle--rtl': localeConfig.direction === 'rtl' }"
           :aria-label="isOpen ? 'Close calendar' : 'Open calendar'" @click="toggle">
           <svg version="1.1" width="16px" height="16px" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"
             fill="#AAA">
@@ -20,27 +20,27 @@
               268V308C320 314.6 325.4 320 332 320H372C378.6 320 384 314.6 384 308V268z"></path>
           </svg>
         </button>
-        <input :value="editable ? inputValue : formattedDate" type="text" class="dual-datepicker__input" :class="{
-          'dual-datepicker__input--has-clear': (selectedDate || (range && selectedRange)) && clearable,
-          'dual-datepicker__input--error': inputError,
-          'dual-datepicker__input--rtl': localeConfig.direction === 'rtl',
-          'dual-datepicker__input--ltr': localeConfig.direction === 'ltr',
+        <input :value="editable ? inputValue : formattedDate" type="text" class="hgc-datepicker__input" :class="{
+          'hgc-datepicker__input--has-clear': (selectedDate || (range && selectedRange)) && clearable,
+          'hgc-datepicker__input--error': inputError,
+          'hgc-datepicker__input--rtl': localeConfig.direction === 'rtl',
+          'hgc-datepicker__input--ltr': localeConfig.direction === 'ltr',
           [inputClass]: inputClass
         }" :placeholder="placeholder" :readonly="!editable" :aria-label="ariaLabel" :aria-expanded="isOpen"
           :aria-invalid="inputError" @click="!editable && toggle()" @keydown.enter="!editable && toggle()"
           @keydown.space.prevent="!editable && toggle()" @input="onInputChange" @blur="onInputBlur"
           @focus="onInputFocus" />
         <button v-if="(selectedDate || (range && selectedRange)) && clearable" type="button"
-          class="dual-datepicker__clear" :class="{ 'dual-datepicker__clear--rtl': localeConfig.direction === 'rtl' }"
+          class="hgc-datepicker__clear" :class="{ 'hgc-datepicker__clear--rtl': localeConfig.direction === 'rtl' }"
           :aria-label="'Clear date'" @click.stop="clearDate">
           ×
         </button>
       </div>
     </div>
 
-    <div v-if="isOpen" class="dual-datepicker__dropdown" role="dialog" aria-modal="true"
+    <div v-if="isOpen" class="hgc-datepicker__dropdown" role="dialog" aria-modal="true"
       :aria-label="`${calendarType} calendar picker`">
-      <div class="dual-datepicker__panel">
+      <div class="hgc-datepicker__panel">
         <CalendarHeader :month-name="currentMonthName" :year="currentYear" :current-month="currentMonth"
           :calendar="calendarType" :locale="localeCode" @previous-month="goToPreviousMonth" @next-month="goToNextMonth"
           @previous-year="goToPreviousYear" @next-year="goToNextYear" @today="goToTodayMonth"
@@ -76,7 +76,7 @@ export default {
   },
   props: {
     value: {
-      type: [Object, Array],
+      type: [Object, Array, String],
       default: null
     },
     calendar: {
@@ -142,7 +142,7 @@ export default {
   },
   data() {
     return {
-      selectedDate: this.range ? null : this.value,
+      selectedDate: this.range ? null : this.parseValue(this.value),
       selectedRange: this.range ? (this.value || { start: null, end: null }) : null,
       isOpen: false,
       calendarType: this.calendar,
@@ -205,16 +205,28 @@ export default {
           return '';
         }
         if (this.selectedRange.start && this.selectedRange.end) {
+          // Validate dates before formatting
+          if (!this.adapter.isValid(this.selectedRange.start) || !this.adapter.isValid(this.selectedRange.end)) {
+            return '';
+          }
           const start = this.adapter.format(this.selectedRange.start, this.format, this.localeConfig);
           const end = this.adapter.format(this.selectedRange.end, this.format, this.localeConfig);
           return `${start} - ${end}`;
         }
         if (this.selectedRange.start) {
+          // Validate date before formatting
+          if (!this.adapter.isValid(this.selectedRange.start)) {
+            return '';
+          }
           return this.adapter.format(this.selectedRange.start, this.format, this.localeConfig);
         }
         return '';
       }
       if (!this.selectedDate) return '';
+      // Validate date before formatting
+      if (!this.adapter.isValid(this.selectedDate)) {
+        return '';
+      }
       return this.adapter.format(this.selectedDate, this.format, this.localeConfig);
     },
     displayFormat() {
@@ -233,11 +245,14 @@ export default {
           }
         }
       } else {
-        if (newVal !== this.selectedDate) {
-          this.selectedDate = newVal;
+        const parsedValue = this.parseValue(newVal);
+        if (parsedValue !== this.selectedDate &&
+          (parsedValue === null || this.selectedDate === null ||
+            !this.adapter.isSameDay(parsedValue, this.selectedDate))) {
+          this.selectedDate = parsedValue;
           this.updateInputValue();
           // Reset view when value changes externally
-          if (newVal) {
+          if (parsedValue) {
             this.viewMonth = null;
             this.viewYear = null;
           }
@@ -261,14 +276,17 @@ export default {
         this.selectedRange = this.value || { start: null, end: null };
       } else {
         this.selectedRange = null;
-        this.selectedDate = this.value;
+        this.selectedDate = this.parseValue(this.value);
       }
       this.updateInputValue();
     },
     selectedDate(newVal) {
       if (!this.range) {
-        this.$emit('input', newVal);
-        this.$emit('change', newVal);
+        const formattedValue = newVal
+          ? this.adapter.format(newVal, this.format, this.localeConfig)
+          : null;
+        this.$emit('input', formattedValue);
+        this.$emit('change', formattedValue);
       }
     },
     selectedRange: {
@@ -283,6 +301,24 @@ export default {
   },
 
   methods: {
+    parseValue(value) {
+      if (!value) return null;
+      // If it's already an object with year, month, day, validate it
+      if (typeof value === 'object' && value.year && value.month && value.day) {
+        const date = { year: value.year, month: value.month, day: value.day };
+        return this.adapter.isValid(date) ? date : null;
+      }
+      // If it's a string, parse it
+      if (typeof value === 'string') {
+        const parsed = this.adapter.parse(value, this.format, this.localeConfig);
+        // Double-check validity after parsing
+        if (parsed && this.adapter.isValid(parsed)) {
+          return parsed;
+        }
+        return null;
+      }
+      return null;
+    },
     toggle() {
       this.isOpen = !this.isOpen;
     },
@@ -375,7 +411,7 @@ export default {
       if (!this.editable) return;
       // Select all text on focus for easy editing
       this.$nextTick(() => {
-        const input = this.$el.querySelector('.dual-datepicker__input');
+        const input = this.$el.querySelector('.hgc-datepicker__input');
         if (input) {
           input.select();
         }
@@ -484,8 +520,8 @@ export default {
     },
     handleOutsideClick(event) {
       // Check if click is on the month/year picker modal
-      const modal = event.target.closest('.calendar-header__modal');
-      const modalContent = event.target.closest('.calendar-header__modal-content');
+      const modal = event.target.closest('.hgc-calendar-header__modal');
+      const modalContent = event.target.closest('.hgc-calendar-header__modal-content');
 
       // If click is on modal, don't close the main dropdown (let modal handle its own closing)
       if (modal || modalContent) {

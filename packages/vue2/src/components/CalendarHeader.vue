@@ -1,47 +1,49 @@
 <template>
-  <div class="calendar-header">
-    <div class="calendar-header__navigation">
-      <button type="button" class="calendar-header__btn" :aria-label="isRTL ? 'Next year' : 'Previous year'"
-        @click="$emit('next-year')">
+  <div class="hgc-calendar-header">
+    <div class="hgc-calendar-header__navigation">
+      <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Next year' : 'Previous year'"
+        @click="$emit(isRTL ? 'previous-year' : 'next-year')">
         &laquo;
       </button>
-      <button type="button" class="calendar-header__btn" :aria-label="isRTL ? 'Next month' : 'Previous month'"
-        @click="$emit('next-month')">
+      <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Next month' : 'Previous month'"
+        @click="$emit(isRTL ? 'previous-month' : 'next-month')">
         &lsaquo;
       </button>
 
-      <div class="calendar-header__current">
-        <button type="button" class="calendar-header__month calendar-header__month--clickable"
+      <div class="hgc-calendar-header__current">
+        <button type="button" class="hgc-calendar-header__month hgc-calendar-header__month--clickable"
           @click="toggleMonthPicker" :aria-label="'Select month'">
           {{ monthName }}
         </button>
-        <button type="button" class="calendar-header__year calendar-header__year--clickable" @click="toggleYearPicker"
-          :aria-label="'Select year'">
+        <button type="button" class="hgc-calendar-header__year hgc-calendar-header__year--clickable"
+          @click="toggleYearPicker" :aria-label="'Select year'">
           {{ formattedYear }}
         </button>
 
         <!-- Month picker modal -->
         <div v-if="showMonthPicker" :dir="localeConfig.direction === 'rtl' ? 'rtl' : 'ltr'"
-          class="calendar-header__modal" @click.self="closeMonthPicker">
-          <div class="calendar-header__modal-content">
-            <div class="calendar-header__modal-header">
+          class="hgc-calendar-header__modal" @click.self="closeMonthPicker">
+          <div class="hgc-calendar-header__modal-content">
+            <div class="hgc-calendar-header__modal-header">
               <span>{{ localeConfig.code === 'ar' ? 'اختر الشهر' : 'Select Month' }}</span>
-              <button type="button" class="calendar-header__modal-close" @click="closeMonthPicker" aria-label="Close">
+              <button type="button" class="hgc-calendar-header__modal-close" @click="closeMonthPicker"
+                aria-label="Close">
                 &times;
               </button>
             </div>
-            <div class="calendar-header__month-grid">
-              <button v-for="monthIndex in 12" :key="monthIndex" type="button" class="calendar-header__month-grid-item"
-                :class="{ 'calendar-header__month-grid-item--active': monthIndex === currentMonth }"
+            <div class="hgc-calendar-header__month-grid">
+              <button v-for="monthIndex in 12" :key="monthIndex" type="button"
+                class="hgc-calendar-header__month-grid-item"
+                :class="{ 'hgc-calendar-header__month-grid-item--active': monthIndex === currentMonth }"
                 @click="selectMonth(monthIndex)">
                 {{ getMonthNameByIndex(monthIndex) }}
               </button>
             </div>
-            <div class="calendar-header__modal-actions">
-              <button type="button" class="calendar-header__modal-btn" @click="goToTodayMonth">
+            <div class="hgc-calendar-header__modal-actions">
+              <button type="button" class="hgc-calendar-header__modal-btn" @click="goToTodayMonth">
                 {{ localeConfig.code === 'ar' ? 'الآن' : 'Now' }}
               </button>
-              <button type="button" class="calendar-header__modal-btn calendar-header__modal-btn--primary"
+              <button type="button" class="hgc-calendar-header__modal-btn hgc-calendar-header__modal-btn--primary"
                 @click="closeMonthPicker">
                 {{ localeConfig.code === 'ar' ? 'حسنا' : 'OK' }}
               </button>
@@ -51,35 +53,36 @@
 
         <!-- Year picker modal -->
         <div v-if="showYearPicker" :dir="localeConfig.direction === 'rtl' ? 'rtl' : 'ltr'"
-          class="calendar-header__modal" @click.self="closeYearPicker">
-          <div class="calendar-header__modal-content">
-            <div class="calendar-header__modal-header">
-              <button type="button" class="calendar-header__modal-nav" @click="previousDecade"
+          class="hgc-calendar-header__modal" @click.self="closeYearPicker">
+          <div class="hgc-calendar-header__modal-content">
+            <div class="hgc-calendar-header__modal-header">
+              <button type="button" class="hgc-calendar-header__modal-nav" @click="previousDecade"
                 :aria-label="isRTL ? 'Next decade' : 'Previous decade'">
                 &laquo;
               </button>
               <span>{{ decadeStart }} - {{ decadeEnd }}</span>
-              <button type="button" class="calendar-header__modal-nav" @click="nextDecade"
+              <button type="button" class="hgc-calendar-header__modal-nav" @click="nextDecade"
                 :aria-label="isRTL ? 'Previous decade' : 'Next decade'">
                 &raquo;
               </button>
-              <button type="button" class="calendar-header__modal-close" @click="closeYearPicker" aria-label="Close">
+              <button type="button" class="hgc-calendar-header__modal-close" @click="closeYearPicker"
+                aria-label="Close">
                 &times;
               </button>
             </div>
-            <div class="calendar-header__year-grid">
+            <div class="hgc-calendar-header__year-grid">
               <button v-for="yearOption in yearOptions" :key="yearOption" type="button"
-                class="calendar-header__year-grid-item"
-                :class="{ 'calendar-header__year-grid-item--active': yearOption === year }"
+                class="hgc-calendar-header__year-grid-item"
+                :class="{ 'hgc-calendar-header__year-grid-item--active': yearOption === year }"
                 @click="selectYear(yearOption)">
                 {{ formatNumber(yearOption, localeConfig) }}
               </button>
             </div>
-            <div class="calendar-header__modal-actions">
-              <button type="button" class="calendar-header__modal-btn" @click="goToTodayYear">
+            <div class="hgc-calendar-header__modal-actions">
+              <button type="button" class="hgc-calendar-header__modal-btn" @click="goToTodayYear">
                 {{ localeConfig.code === 'ar' ? 'الآن' : 'Now' }}
               </button>
-              <button type="button" class="calendar-header__modal-btn calendar-header__modal-btn--primary"
+              <button type="button" class="hgc-calendar-header__modal-btn hgc-calendar-header__modal-btn--primary"
                 @click="closeYearPicker">
                 {{ localeConfig.code === 'ar' ? 'حسنا' : 'OK' }}
               </button>
@@ -88,17 +91,17 @@
         </div>
       </div>
 
-      <button type="button" class="calendar-header__btn" :aria-label="isRTL ? 'Previous month' : 'Next month'"
-        @click="$emit('previous-month')">
+      <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Previous month' : 'Next month'"
+        @click="$emit(isRTL ? 'next-month' : 'previous-month')">
         &rsaquo;
       </button>
-      <button type="button" class="calendar-header__btn" :aria-label="isRTL ? 'Previous year' : 'Next year'"
-        @click="$emit('previous-year')">
+      <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Previous year' : 'Next year'"
+        @click="$emit(isRTL ? 'next-year' : 'previous-year')">
         &raquo;
       </button>
     </div>
 
-    <div class="calendar-header__actions">
+    <div class="hgc-calendar-header__actions">
       <!-- ... existing code ... -->
     </div>
   </div>
@@ -242,8 +245,8 @@ export default {
 </script>
 
 <style scoped>
-.calendar-header__month--clickable,
-.calendar-header__year--clickable {
+.hgc-calendar-header__month--clickable,
+.hgc-calendar-header__year--clickable {
   cursor: pointer;
   padding: 2px 6px;
   border-radius: 4px;
@@ -253,17 +256,17 @@ export default {
   transition: background-color 0.2s;
 }
 
-.calendar-header__month--clickable:hover,
-.calendar-header__year--clickable:hover {
+.hgc-calendar-header__month--clickable:hover,
+.hgc-calendar-header__year--clickable:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.calendar-header__current {
+.hgc-calendar-header__current {
   position: relative;
 }
 
 /* Modal overlay */
-.calendar-header__modal {
+.hgc-calendar-header__modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -288,7 +291,7 @@ export default {
 }
 
 /* Modal content */
-.calendar-header__modal-content {
+.hgc-calendar-header__modal-content {
   background: white;
   border-radius: 12px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -309,7 +312,7 @@ export default {
   }
 }
 
-.calendar-header__modal-header {
+.hgc-calendar-header__modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -320,12 +323,12 @@ export default {
   border-radius: 12px 12px 0 0;
 }
 
-.calendar-header__modal-header span {
+.hgc-calendar-header__modal-header span {
   font-weight: 600;
   font-size: 1rem;
 }
 
-.calendar-header__modal-close {
+.hgc-calendar-header__modal-close {
   background: none;
   border: none;
   color: white;
@@ -341,11 +344,11 @@ export default {
   transition: background-color 0.2s;
 }
 
-.calendar-header__modal-close:hover {
+.hgc-calendar-header__modal-close:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.calendar-header__modal-nav {
+.hgc-calendar-header__modal-nav {
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
@@ -356,19 +359,19 @@ export default {
   transition: background-color 0.2s;
 }
 
-.calendar-header__modal-nav:hover {
+.hgc-calendar-header__modal-nav:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
 /* Month grid - 3 columns x 4 rows */
-.calendar-header__month-grid {
+.hgc-calendar-header__month-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   padding: 16px;
 }
 
-.calendar-header__month-grid-item {
+.hgc-calendar-header__month-grid-item {
   padding: 12px 8px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -380,32 +383,32 @@ export default {
   font-weight: 500;
 }
 
-.calendar-header__month-grid-item:hover {
+.hgc-calendar-header__month-grid-item:hover {
   background: #f3f4f6;
   border-color: #3b82f6;
   transform: scale(1.05);
 }
 
-.calendar-header__month-grid-item--active {
+.hgc-calendar-header__month-grid-item--active {
   background: #3b82f6;
   color: white;
   border-color: #3b82f6;
   font-weight: 600;
 }
 
-.calendar-header__month-grid-item--active:hover {
+.hgc-calendar-header__month-grid-item--active:hover {
   background: #2563eb;
 }
 
 /* Year grid - 3 columns x 4 rows */
-.calendar-header__year-grid {
+.hgc-calendar-header__year-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   padding: 16px;
 }
 
-.calendar-header__year-grid-item {
+.hgc-calendar-header__year-grid-item {
   padding: 12px 8px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -417,25 +420,25 @@ export default {
   font-weight: 500;
 }
 
-.calendar-header__year-grid-item:hover {
+.hgc-calendar-header__year-grid-item:hover {
   background: #f3f4f6;
   border-color: #3b82f6;
   transform: scale(1.05);
 }
 
-.calendar-header__year-grid-item--active {
+.hgc-calendar-header__year-grid-item--active {
   background: #3b82f6;
   color: white;
   border-color: #3b82f6;
   font-weight: 600;
 }
 
-.calendar-header__year-grid-item--active:hover {
+.hgc-calendar-header__year-grid-item--active:hover {
   background: #2563eb;
 }
 
 /* Modal actions */
-.calendar-header__modal-actions {
+.hgc-calendar-header__modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
@@ -445,11 +448,11 @@ export default {
   border-radius: 0 0 12px 12px;
 }
 
-[dir="rtl"] .calendar-header__modal-actions {
+[dir="rtl"] .hgc-calendar-header__modal-actions {
   flex-direction: row-reverse;
 }
 
-.calendar-header__modal-btn {
+.hgc-calendar-header__modal-btn {
   padding: 8px 16px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
@@ -461,24 +464,24 @@ export default {
   transition: all 0.2s;
 }
 
-.calendar-header__modal-btn:hover {
+.hgc-calendar-header__modal-btn:hover {
   background: #f3f4f6;
   border-color: #9ca3af;
 }
 
-.calendar-header__modal-btn--primary {
+.hgc-calendar-header__modal-btn--primary {
   background: #3b82f6;
   color: white;
   border-color: #3b82f6;
 }
 
-.calendar-header__modal-btn--primary:hover {
+.hgc-calendar-header__modal-btn--primary:hover {
   background: #2563eb;
   border-color: #2563eb;
 }
 
 /* Remove old dropdown styles */
-.calendar-header__dropdown {
+.hgc-calendar-header__dropdown {
   display: none;
 }
 </style>

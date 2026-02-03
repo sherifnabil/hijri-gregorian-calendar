@@ -11,8 +11,7 @@
         <HijriGregorianCalendar v-model="gregorianDate" calendar="gregorian" locale="en"
           placeholder="Select Gregorian date" />
         <div v-if="gregorianDate" class="selected-date">
-          Selected: {{ gregorianDate.year }}-{{ String(gregorianDate.month).padStart(2, '0') }}-{{
-            String(gregorianDate.day).padStart(2, '0') }}
+          Selected: {{ gregorianDate }}
         </div>
       </section>
 
@@ -20,8 +19,7 @@
         <h2>Hijri Calendar (Arabic)</h2>
         <HijriGregorianCalendar v-model="hijriDate" calendar="hijri" locale="ar" placeholder="اختر التاريخ الهجري" />
         <div v-if="hijriDate" class="selected-date">
-          Selected: {{ hijriDate.year }}/{{ String(hijriDate.month).padStart(2, '0') }}/{{
-            String(hijriDate.day).padStart(2, '0') }}
+          Selected: {{ hijriDate }}
         </div>
       </section>
     </main>
