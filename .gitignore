@@ -38,17 +38,22 @@ coverage/
 *.tmp
 *.temp
 
+# Node modules and dist folders
 /packages/core/node_modules
 /packages/vue2/node_modules
 /packages/vue3/node_modules
 /examples/vue2-example/node_modules
 /examples/vue3-example/node_modules
-/packages/core/dist
-/packages/vue2/dist
-/packages/vue3/dist
+/packages/core/dist/
+/packages/vue2/dist/
+/packages/vue3/dist/
 /packages/vue2/node_modules
 /packages/vue3/node_modules
-/examples/vue2-example/dist
-/examples/vue3-example/dist
+/examples/vue2-example/dist/
+/examples/vue3-example/dist/
 /examples/vue2-example/node_modules
 /examples/vue3-example/node_modules
+
+# Vite
+.vite/
+dist/
