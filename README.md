@@ -160,11 +160,11 @@ const dateRange = ref({ start: null, end: null });
 <template>
   <HijriGregorianCalendar
     v-model="date"
-    :min-date="{ year: 2024, month: 1, day: 1 }"
-    :max-date="{ year: 2024, month: 12, day: 31 }"
+    :min-date="{ year: 2026, month: 1, day: 1 }"
+    :max-date="{ year: 2026, month: 12, day: 31 }"
     :disabled-dates="[
-      { year: 2024, month: 1, day: 1 },
-      { year: 2024, month: 1, day: 15 }
+      { year: 2026, month: 1, day: 1 },
+      { year: 2026, month: 1, day: 15 }
     ]"
     :disabled-days-of-week="[0, 6]"
     calendar="gregorian"
@@ -281,13 +281,13 @@ The `format` and `inputFormat` props support the following patterns:
 
 - `dd` - Day of month (01-31)
 - `MM` - Month (01-12)
-- `yyyy` - Full year (e.g., 2024)
+- `yyyy` - Full year (e.g., 2026)
 - `yy` - Short year (e.g., 24)
 - `/` - Separator (can use `-`, `.`, or space)
 
 Examples:
-- `dd/MM/yyyy` → `01/12/2024`
-- `yyyy-MM-dd` → `2024-12-01`
+- `dd/MM/yyyy` → `01/12/2026`
+- `yyyy-MM-dd` → `2026-12-01`
 - `dd.MM.yy` → `01.12.24`
 
 ## Packages
