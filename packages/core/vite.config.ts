@@ -10,7 +10,7 @@ export default defineConfig({
             fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`
         },
         rollupOptions: {
-            external: ['date-fns', 'date-fns/locale', 'hijri-date', 'hijri-date/lib/safe'],
+            external: ['date-fns', 'date-fns/locale', 'moment', 'moment-hijri'],
             output: {
                 preserveModules: false,
                 exports: 'named'

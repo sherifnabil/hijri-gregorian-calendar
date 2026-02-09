@@ -10,7 +10,7 @@ npm install @sherifnabil/hijri-gregorian-calendar-core
 
 ## Features
 
-- **Calendar Adapters**: Gregorian (using `date-fns`) and Hijri (using `hijri-date`)
+- **Calendar Adapters**: Gregorian (using `date-fns`) and Hijri (using `moment-hijri` with Umm al-Qura calendar)
 - **Calendar Grid Generator**: Generate calendar months with date constraints
 - **Date Utilities**: Formatting, parsing, and navigation
 - **Locale Support**: English and Arabic locales with RTL support
@@ -177,7 +177,8 @@ interface CalendarDay {
 ## Requirements
 
 - `date-fns` ^3.3.1
-- `hijri-date` ^0.2.2
+- `moment` ^2.30.1
+- `moment-hijri` ^3.0.0
 
 ## Documentation
 
