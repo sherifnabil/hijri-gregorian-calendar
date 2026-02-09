@@ -1,5 +1,5 @@
 <template>
-  <div class="hgc-datepicker" ref="datepicker">
+  <div class="hgc-datepicker" ref="datepicker" dir="ltr">
     <div class="hgc-datepicker__input-wrapper">
       <div class="hgc-datepicker__input-container" :style="{ direction: localeConfig.direction }">
         <button type="button" class="hgc-datepicker__toggle"

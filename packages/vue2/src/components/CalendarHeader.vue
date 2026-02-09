@@ -1,12 +1,12 @@
 <template>
   <div class="hgc-calendar-header">
     <div class="hgc-calendar-header__navigation">
-      <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Next year' : 'Previous year'"
-        @click="$emit(isRTL ? 'previous-year' : 'next-year')">
+      <button type="button" class="hgc-calendar-header__btn"
+        :aria-label="localeConfig.code === 'ar' ? 'السابق' : 'Next year'" @click="$emit('previous-year')">
         &laquo;
       </button>
-      <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Next month' : 'Previous month'"
-        @click="$emit(isRTL ? 'previous-month' : 'next-month')">
+      <button type="button" class="hgc-calendar-header__btn"
+        :aria-label="localeConfig.code === 'ar' ? 'التالي' : 'Next month'" @click="$emit('previous-month')">
         &lsaquo;
       </button>
 
@@ -91,12 +91,12 @@
         </div>
       </div>
 
-      <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Previous month' : 'Next month'"
-        @click="$emit(isRTL ? 'next-month' : 'previous-month')">
+      <button type="button" class="hgc-calendar-header__btn"
+        :aria-label="localeConfig.code === 'ar' ? 'التالي' : 'Next month'" @click="$emit('next-month')">
         &rsaquo;
       </button>
-      <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Previous year' : 'Next year'"
-        @click="$emit(isRTL ? 'next-year' : 'previous-year')">
+      <button type="button" class="hgc-calendar-header__btn"
+        :aria-label="localeConfig.code === 'ar' ? 'التالي' : 'Next year'" @click="$emit('next-year')">
         &raquo;
       </button>
     </div>
