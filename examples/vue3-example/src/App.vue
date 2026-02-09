@@ -2,10 +2,9 @@
 import { ref } from 'vue';
 import { HijriGregorianCalendar } from '@sherifnabil/hijri-gregorian-calendar-vue3';
 import '@sherifnabil/hijri-gregorian-calendar-vue3/styles';
-import type { CalendarDate } from '@sherifnabil/hijri-gregorian-calendar-core';
 
-const gregorianDate = ref<CalendarDate | null>(null);
-const hijriDate = ref<CalendarDate | null>(null);
+const gregorianDate = ref<string | null>(null);
+const hijriDate = ref<string | null>(null);
 </script>
 
 <template>
@@ -18,10 +17,10 @@ const hijriDate = ref<CalendarDate | null>(null);
     <main>
       <section class="demo-section">
         <h2>Gregorian Calendar (English)</h2>
-        <HijriGregorianCalendar v-model="gregorianDate" calendar="gregorian" locale="en" placeholder="Select Gregorian date" />
+        <HijriGregorianCalendar v-model="gregorianDate" calendar="gregorian" locale="en"
+          placeholder="Select Gregorian date" />
         <div v-if="gregorianDate" class="selected-date">
-          Selected: {{ gregorianDate.year }}-{{ String(gregorianDate.month).padStart(2, '0') }}-{{
-            String(gregorianDate.day).padStart(2, '0') }}
+          Selected: {{ gregorianDate }}
         </div>
       </section>
 
@@ -29,8 +28,7 @@ const hijriDate = ref<CalendarDate | null>(null);
         <h2>Hijri Calendar (Arabic)</h2>
         <HijriGregorianCalendar v-model="hijriDate" calendar="hijri" locale="ar" placeholder="اختر التاريخ الهجري" />
         <div v-if="hijriDate" class="selected-date">
-          Selected: {{ hijriDate.year }}/{{ String(hijriDate.month).padStart(2, '0') }}/{{
-            String(hijriDate.day).padStart(2, '0') }}
+          Selected: {{ hijriDate }}
         </div>
       </section>
     </main>
