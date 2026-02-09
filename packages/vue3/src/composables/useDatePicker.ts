@@ -27,7 +27,7 @@ export interface UseDatePickerOptions {
     locale?: Ref<string> | string;
     range?: Ref<boolean> | boolean;
     time?: Ref<boolean> | boolean;
-    modelValue?: Ref<CalendarDate | null | DateRange>;
+    modelValue?: Ref<CalendarDate | null | DateRange | string>;
     format?: Ref<string> | string;
     inputFormat?: Ref<string | null> | string | null;
     minDate?: Ref<CalendarDate | null> | CalendarDate | null;
@@ -90,10 +90,31 @@ export function useDatePicker(options: UseDatePickerOptions = {}) {
             : (options.disabledDaysOfWeek || [])
     );
 
+    // Helper function to parse value (string or object) to CalendarDate
+    function parseValue(value: CalendarDate | string | null | undefined): CalendarDate | null {
+        if (!value) return null;
+        // If it's already an object with year, month, day, validate it
+        if (typeof value === 'object' && 'year' in value && 'month' in value && 'day' in value) {
+            const date = value as CalendarDate;
+            return adapter.value.isValid(date) ? date : null;
+        }
+        // If it's a string, parse it
+        if (typeof value === 'string') {
+            const format = inputDateFormat.value || dateFormat.value;
+            const parsed = adapter.value.parse(value, format, locale.value);
+            // Double-check validity after parsing
+            if (parsed && adapter.value.isValid(parsed)) {
+                return parsed;
+            }
+            return null;
+        }
+        return null;
+    }
+
     // State
     const modelValue = computed(() => options.modelValue?.value);
     const selectedDate = ref<CalendarDate | null>(
-        isRange.value ? null : (modelValue.value as CalendarDate | null)
+        isRange.value ? null : parseValue(modelValue.value as CalendarDate | string | null)
     );
     const selectedRange = ref<DateRange>(
         isRange.value 
@@ -332,16 +353,28 @@ export function useDatePicker(options: UseDatePickerOptions = {}) {
                 return '';
             }
             if (selectedRange.value.start && selectedRange.value.end) {
+                // Validate dates before formatting
+                if (!adapter.value.isValid(selectedRange.value.start) || !adapter.value.isValid(selectedRange.value.end)) {
+                    return '';
+                }
                 const start = adapter.value.format(selectedRange.value.start, dateFormat.value, locale.value);
                 const end = adapter.value.format(selectedRange.value.end, dateFormat.value, locale.value);
                 return `${start} - ${end}`;
             }
             if (selectedRange.value.start) {
+                // Validate date before formatting
+                if (!adapter.value.isValid(selectedRange.value.start)) {
+                    return '';
+                }
                 return adapter.value.format(selectedRange.value.start, dateFormat.value, locale.value);
             }
             return '';
         }
         if (!selectedDate.value) return '';
+        // Validate date before formatting
+        if (!adapter.value.isValid(selectedDate.value)) {
+            return '';
+        }
         return adapter.value.format(selectedDate.value, dateFormat.value, locale.value);
     });
 
@@ -370,16 +403,21 @@ export function useDatePicker(options: UseDatePickerOptions = {}) {
                     updateInputValue();
                 }
             } else {
-                if (newVal && !('start' in newVal)) {
-                    selectedDate.value = newVal as CalendarDate;
-                    updateInputValue();
-                    viewMonth.value = null;
-                    viewYear.value = null;
-                } else if (!newVal) {
+                if (!newVal) {
                     selectedDate.value = null;
                     updateInputValue();
                     viewMonth.value = null;
                     viewYear.value = null;
+                } else {
+                    const parsedValue = parseValue(newVal as CalendarDate | string | null);
+                    if (parsedValue !== selectedDate.value && 
+                        (parsedValue === null || selectedDate.value === null || 
+                         !adapter.value.isSameDay(parsedValue, selectedDate.value))) {
+                        selectedDate.value = parsedValue;
+                        updateInputValue();
+                        viewMonth.value = null;
+                        viewYear.value = null;
+                    }
                 }
             }
         }, { immediate: true });

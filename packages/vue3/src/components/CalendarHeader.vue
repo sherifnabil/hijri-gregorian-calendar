@@ -1,49 +1,52 @@
 <template>
-  <div ref="headerRef" class="calendar-header">
-    <div class="calendar-header__navigation">
-      <button type="button" class="calendar-header__btn" :aria-label="isRTL ? 'Next year' : 'Previous year'"
-        @click="$emit('next-year')">
-        &laquo;
-      </button>
-      <button type="button" class="calendar-header__btn" :aria-label="isRTL ? 'Next month' : 'Previous month'"
-        @click="$emit('next-month')">
-        &lsaquo;
-      </button>
+  <div ref="headerRef" class="hgc-calendar-header">
+    <div class="hgc-calendar-header__navigation">
+      <div class="hgc-calendar-header__nav-group">
+        <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Next year' : 'Previous year'"
+          @click="$emit('next-year')">
+          &laquo;
+        </button>
+        <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Next month' : 'Previous month'"
+          @click="$emit('next-month')">
+          &lsaquo;
+        </button>
+      </div>
 
-      <div class="calendar-header__current">
-        <button type="button" class="calendar-header__month calendar-header__month--clickable"
+      <div class="hgc-calendar-header__current">
+        <button type="button" class="hgc-calendar-header__month hgc-calendar-header__month--clickable"
           @click="toggleMonthPicker" :aria-label="'Select month'">
           {{ monthName }}
         </button>
-        <button type="button" class="calendar-header__year calendar-header__year--clickable" @click="toggleYearPicker"
-          :aria-label="'Select year'">
+        <button type="button" class="hgc-calendar-header__year hgc-calendar-header__year--clickable"
+          @click="toggleYearPicker" :aria-label="'Select year'">
           {{ formattedYear }}
         </button>
 
         <!-- Month picker modal -->
         <Teleport to="body">
           <div v-if="showMonthPicker" :dir="localeConfig.direction === 'rtl' ? 'rtl' : 'ltr'"
-            class="calendar-header__modal" @click.self="closeMonthPicker">
-            <div class="calendar-header__modal-content">
-              <div class="calendar-header__modal-header">
+            class="hgc-calendar-header__modal" @click.self="closeMonthPicker">
+            <div class="hgc-calendar-header__modal-content">
+              <div class="hgc-calendar-header__modal-header">
                 <span>{{ localeConfig.code === 'ar' ? 'اختر الشهر' : 'Select Month' }}</span>
-                <button type="button" class="calendar-header__modal-close" @click="closeMonthPicker" aria-label="Close">
+                <button type="button" class="hgc-calendar-header__modal-close" @click="closeMonthPicker"
+                  aria-label="Close">
                   &times;
                 </button>
               </div>
-              <div class="calendar-header__month-grid">
+              <div class="hgc-calendar-header__month-grid">
                 <button v-for="monthIndex in 12" :key="monthIndex" type="button"
-                  class="calendar-header__month-grid-item"
-                  :class="{ 'calendar-header__month-grid-item--active': monthIndex === currentMonth }"
+                  class="hgc-calendar-header__month-grid-item"
+                  :class="{ 'hgc-calendar-header__month-grid-item--active': monthIndex === currentMonth }"
                   @click="selectMonth(monthIndex)">
                   {{ getMonthNameByIndex(monthIndex) }}
                 </button>
               </div>
-              <div class="calendar-header__modal-actions">
-                <button type="button" class="calendar-header__modal-btn" @click="goToTodayMonth">
+              <div class="hgc-calendar-header__modal-actions">
+                <button type="button" class="hgc-calendar-header__modal-btn" @click="goToTodayMonth">
                   {{ localeConfig.code === 'ar' ? 'الآن' : 'Now' }}
                 </button>
-                <button type="button" class="calendar-header__modal-btn calendar-header__modal-btn--primary"
+                <button type="button" class="hgc-calendar-header__modal-btn hgc-calendar-header__modal-btn--primary"
                   @click="closeMonthPicker">
                   {{ localeConfig.code === 'ar' ? 'حسنا' : 'OK' }}
                 </button>
@@ -55,35 +58,36 @@
         <!-- Year picker modal -->
         <Teleport to="body">
           <div v-if="showYearPicker" :dir="localeConfig.direction === 'rtl' ? 'rtl' : 'ltr'"
-            class="calendar-header__modal" @click.self="closeYearPicker">
-            <div class="calendar-header__modal-content">
-              <div class="calendar-header__modal-header">
-                <button type="button" class="calendar-header__modal-nav" @click="previousDecade"
+            class="hgc-calendar-header__modal" @click.self="closeYearPicker">
+            <div class="hgc-calendar-header__modal-content">
+              <div class="hgc-calendar-header__modal-header">
+                <button type="button" class="hgc-calendar-header__modal-nav" @click="previousDecade"
                   :aria-label="isRTL ? 'Next decade' : 'Previous decade'">
                   &laquo;
                 </button>
                 <span>{{ decadeStart }} - {{ decadeEnd }}</span>
-                <button type="button" class="calendar-header__modal-nav" @click="nextDecade"
+                <button type="button" class="hgc-calendar-header__modal-nav" @click="nextDecade"
                   :aria-label="isRTL ? 'Previous decade' : 'Next decade'">
                   &raquo;
                 </button>
-                <button type="button" class="calendar-header__modal-close" @click="closeYearPicker" aria-label="Close">
+                <button type="button" class="hgc-calendar-header__modal-close" @click="closeYearPicker"
+                  aria-label="Close">
                   &times;
                 </button>
               </div>
-              <div class="calendar-header__year-grid">
+              <div class="hgc-calendar-header__year-grid">
                 <button v-for="yearOption in yearOptions" :key="yearOption" type="button"
-                  class="calendar-header__year-grid-item"
-                  :class="{ 'calendar-header__year-grid-item--active': yearOption === year }"
+                  class="hgc-calendar-header__year-grid-item"
+                  :class="{ 'hgc-calendar-header__year-grid-item--active': yearOption === year }"
                   @click="selectYear(yearOption)">
                   {{ formatNumber(yearOption, localeConfig) }}
                 </button>
               </div>
-              <div class="calendar-header__modal-actions">
-                <button type="button" class="calendar-header__modal-btn" @click="goToTodayYear">
+              <div class="hgc-calendar-header__modal-actions">
+                <button type="button" class="hgc-calendar-header__modal-btn" @click="goToTodayYear">
                   {{ localeConfig.code === 'ar' ? 'الآن' : 'Now' }}
                 </button>
-                <button type="button" class="calendar-header__modal-btn calendar-header__modal-btn--primary"
+                <button type="button" class="hgc-calendar-header__modal-btn hgc-calendar-header__modal-btn--primary"
                   @click="closeYearPicker">
                   {{ localeConfig.code === 'ar' ? 'حسنا' : 'OK' }}
                 </button>
@@ -93,17 +97,19 @@
         </Teleport>
       </div>
 
-      <button type="button" class="calendar-header__btn" :aria-label="isRTL ? 'Previous month' : 'Next month'"
-        @click="$emit('previous-month')">
-        &rsaquo;
-      </button>
-      <button type="button" class="calendar-header__btn" :aria-label="isRTL ? 'Previous year' : 'Next year'"
-        @click="$emit('previous-year')">
-        &raquo;
-      </button>
+      <div class="hgc-calendar-header__nav-group">
+        <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Previous month' : 'Next month'"
+          @click="$emit('previous-month')">
+          &rsaquo;
+        </button>
+        <button type="button" class="hgc-calendar-header__btn" :aria-label="isRTL ? 'Previous year' : 'Next year'"
+          @click="$emit('previous-year')">
+          &raquo;
+        </button>
+      </div>
     </div>
 
-    <div class="calendar-header__actions">
+    <div class="hgc-calendar-header__actions">
       <!-- ... existing code ... -->
     </div>
   </div>
@@ -218,13 +224,13 @@ function handleOutsideClick(event: MouseEvent) {
   const target = event.target as HTMLElement;
 
   // Don't close if clicking on month/year toggle buttons
-  if (target.closest('.calendar-header__month--clickable') ||
-    target.closest('.calendar-header__year--clickable')) {
+  if (target.closest('.hgc-calendar-header__month--clickable') ||
+    target.closest('.hgc-calendar-header__year--clickable')) {
     return;
   }
 
   // Don't close if clicking on modal (which is teleported to body)
-  if (target.closest('.calendar-header__modal')) {
+  if (target.closest('.hgc-calendar-header__modal')) {
     return;
   }
 

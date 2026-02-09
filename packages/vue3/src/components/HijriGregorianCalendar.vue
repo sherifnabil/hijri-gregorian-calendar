@@ -1,9 +1,9 @@
 <template>
-  <div class="dual-datepicker" ref="datepickerRef" :dir="locale.direction">
-    <div class="dual-datepicker__input-wrapper">
-      <div class="dual-datepicker__input-container" :style="{ direction: locale.direction }">
-        <button type="button" class="dual-datepicker__toggle"
-          :class="{ 'dual-datepicker__toggle--rtl': locale.direction === 'rtl' }"
+  <div class="hgc-datepicker" ref="datepickerRef" :dir="locale.direction">
+    <div class="hgc-datepicker__input-wrapper">
+      <div class="hgc-datepicker__input-container" :style="{ direction: locale.direction }">
+        <button type="button" class="hgc-datepicker__toggle"
+          :class="{ 'hgc-datepicker__toggle--rtl': locale.direction === 'rtl' }"
           :aria-label="isOpen ? 'Close calendar' : 'Open calendar'" @click="toggle">
           <svg version="1.1" width="16px" height="16px" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"
             fill="#AAA">
@@ -20,28 +20,27 @@
               268V308C320 314.6 325.4 320 332 320H372C378.6 320 384 314.6 384 308V268z"></path>
           </svg>
         </button>
-        <input :value="editable ? inputValue : formattedDate" type="text" class="dual-datepicker__input" :class="{
-          'dual-datepicker__input--has-clear': (selectedDate || (range && selectedRange)) && clearable,
-          'dual-datepicker__input--error': inputError,
-          'dual-datepicker__input--rtl': locale.direction === 'rtl',
-          'dual-datepicker__input--ltr': locale.direction === 'ltr',
+        <input :value="editable ? inputValue : formattedDate" type="text" class="hgc-datepicker__input" :class="{
+          'hgc-datepicker__input--has-clear': (selectedDate || (range && selectedRange)) && clearable,
+          'hgc-datepicker__input--error': inputError,
+          'hgc-datepicker__input--rtl': locale.direction === 'rtl',
+          'hgc-datepicker__input--ltr': locale.direction === 'ltr',
           [inputClass]: inputClass
         }" :placeholder="placeholder" :readonly="!editable" :aria-label="ariaLabel" :aria-expanded="isOpen"
           :aria-invalid="inputError" @click="!editable && toggle()" @keydown.enter="!editable && toggle()"
           @keydown.space.prevent="!editable && toggle()" @input="onInputChange" @blur="onInputBlur"
           @focus="onInputFocus" />
         <button v-if="(selectedDate || (range && selectedRange)) && clearable" type="button"
-          class="dual-datepicker__clear" :class="{ 'dual-datepicker__clear--rtl': locale.direction === 'rtl' }"
+          class="hgc-datepicker__clear" :class="{ 'hgc-datepicker__clear--rtl': locale.direction === 'rtl' }"
           :aria-label="'Clear date'" @click.stop="clearSelection">
           ×
         </button>
       </div>
     </div>
 
-    <Teleport to="body">
-      <div v-if="isOpen" class="dual-datepicker__dropdown" role="dialog" aria-modal="true"
+      <div v-if="isOpen" class="hgc-datepicker__dropdown" role="dialog" aria-modal="true"
         :aria-label="`${calendarType} calendar picker`">
-        <div class="dual-datepicker__panel">
+        <div class="hgc-datepicker__panel">
           <CalendarHeader :month-name="currentMonthName" :year="currentYear" :current-month="currentMonth"
             :calendar="calendarType" :locale="localeCode" @previous-month="goToPreviousMonth"
             @next-month="goToNextMonth" @previous-year="goToPreviousYear" @next-year="goToNextYear"
@@ -52,7 +51,6 @@
             :selected-range="range ? selectedRange : null" @select-date="onSelectDate" @today="goToTodayMonth" />
         </div>
       </div>
-    </Teleport>
   </div>
 </template>
 
@@ -64,7 +62,7 @@ import CalendarHeader from './CalendarHeader.vue';
 import CalendarGrid from './CalendarGrid.vue';
 
 interface Props {
-  modelValue?: CalendarDate | DateRange | null;
+  modelValue?: CalendarDate | DateRange | string | null;
   calendar?: 'gregorian' | 'hijri';
   locale?: string;
   range?: boolean;
@@ -102,8 +100,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  'update:modelValue': [value: CalendarDate | DateRange | null];
-  'change': [value: CalendarDate | DateRange | null];
+  'update:modelValue': [value: CalendarDate | DateRange | string | null];
+  'change': [value: CalendarDate | DateRange | string | null];
 }>();
 
 const datepickerRef = ref<HTMLElement | null>(null);
@@ -157,8 +155,12 @@ watch([selectedDate, selectedRange], () => {
     emit('update:modelValue', selectedRange.value);
     emit('change', selectedRange.value);
   } else {
-    emit('update:modelValue', selectedDate.value);
-    emit('change', selectedDate.value);
+    // Emit string value instead of object
+    const formattedValue = selectedDate.value
+      ? adapter.value.format(selectedDate.value, props.format, locale.value)
+      : null;
+    emit('update:modelValue', formattedValue);
+    emit('change', formattedValue);
   }
 }, { deep: true });
 
@@ -170,7 +172,7 @@ watch(() => props.modelValue, (newVal) => {
       updateInputValue();
     }
   } else {
-    if (newVal && !('start' in newVal)) {
+    if (newVal && (typeof newVal === 'string' || (typeof newVal === 'object' && !('start' in newVal)))) {
       // Already handled by composable watch
       updateInputValue();
     }
@@ -184,7 +186,11 @@ watch(() => props.range, (newVal) => {
     selectedRange.value = (props.modelValue as DateRange) || { start: null, end: null };
   } else {
     selectedRange.value = { start: null, end: null };
-    selectedDate.value = (props.modelValue as CalendarDate) || null;
+    // Parse string value if needed
+    const parsedValue = typeof props.modelValue === 'string'
+      ? adapter.value.parse(props.modelValue, props.format, locale.value)
+      : (props.modelValue as CalendarDate | null);
+    selectedDate.value = parsedValue || null;
   }
   updateInputValue();
 });
@@ -229,7 +235,7 @@ function onInputFocus() {
   if (!props.editable) return;
   // Select all text on focus for easy editing
   nextTick(() => {
-    const input = datepickerRef.value?.querySelector('.dual-datepicker__input') as HTMLInputElement;
+    const input = datepickerRef.value?.querySelector('.hgc-datepicker__input') as HTMLInputElement;
     if (input) {
       input.select();
     }
@@ -238,27 +244,27 @@ function onInputFocus() {
 
 function handleOutsideClick(event: MouseEvent) {
   const target = event.target as HTMLElement;
-  
+
   // Check if click is on the month/year picker modal
-  const modal = target.closest('.calendar-header__modal');
-  const modalContent = target.closest('.calendar-header__modal-content');
-  
+  const modal = target.closest('.hgc-calendar-header__modal');
+  const modalContent = target.closest('.hgc-calendar-header__modal-content');
+
   // If click is on modal, don't close the main dropdown
   if (modal || modalContent) {
     return;
   }
-  
+
   // Check if click is inside the teleported dropdown
-  const dropdown = target.closest('.dual-datepicker__dropdown');
+  const dropdown = target.closest('.hgc-datepicker__dropdown');
   if (dropdown) {
     return;
   }
-  
+
   // Check if click is inside the input container
   if (datepickerRef.value && datepickerRef.value.contains(target)) {
     return;
   }
-  
+
   // Close dropdown if click is outside both input and dropdown
   isOpen.value = false;
 }
